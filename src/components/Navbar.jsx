@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import Youtube_Logo from "../assets/youtube.svg";
 import AuthModal from "./AuthModal";
 import AvatarModal from "./AvatarModal";
 
-const Navbar = ({ onMenuClick, onSearch }) => {
+const Navbar = ({ activeTab, onMenuClick, onSearch }) => {
   const [searchInput, setSearchInput] = useState('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
@@ -17,6 +17,8 @@ const Navbar = ({ onMenuClick, onSearch }) => {
     onSearch(searchInput);
     setIsMobileSearchOpen(false);
   };
+
+  useEffect(() => {setIsMobileSearchOpen(false); setSearchInput("")}, [activeTab]);
 
   if (isMobileSearchOpen) {
     return (

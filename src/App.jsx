@@ -10,13 +10,14 @@ import AvatarModal from './components/AvatarModal';
 import AuthModal from './components/AuthModal';
 
 import ProductGrid from './components/ProductGrid';
+import { useNavigate } from 'react-router-dom';
 
-function App() {
+function App({ tab: activeTab }) {
+  const navigate = useNavigate();
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('latest');
-  const [activeTab, setActiveTab] = useState('home');
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { user, logout } = useAuth();
@@ -35,6 +36,10 @@ function App() {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const setActiveTab = (tab) => {
+    navigate(`/${tab}`);
+  }
+
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (activeTab !== 'products') {
@@ -43,12 +48,12 @@ function App() {
   };
 
   useEffect(() => {
-    setSearchQuery('');
-  }, [activeTab])
+    setSearchQuery("");
+  }, [activeTab]);
 
   return (
     <div className="app-container">
-      <Navbar onMenuClick={toggleSidebar} onSearch={handleSearch} />
+      <Navbar activeTab={activeTab} onMenuClick={toggleSidebar} onSearch={handleSearch} />
       <div className="main-content">
         <Sidebar 
           isOpen={isSidebarOpen} 
