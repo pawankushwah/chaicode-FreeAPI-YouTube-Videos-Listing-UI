@@ -10,6 +10,7 @@ import AvatarModal from './components/AvatarModal';
 import AuthModal from './components/AuthModal';
 
 import ProductGrid from './components/ProductGrid';
+import QuoteGrid from './components/QuoteGrid';
 import { useNavigate } from 'react-router-dom';
 
 function App({ tab: activeTab }) {
@@ -131,6 +132,8 @@ function App({ tab: activeTab }) {
             </>
           ) : activeTab === 'products' ? (
             <ProductGrid searchQuery={searchQuery} />
+          ) : activeTab === 'quotes' ? (
+            <QuoteGrid />
           ) : (
             <div className="flex flex-col items-center justify-center h-[calc(100vh-var(--height-navbar)-80px)] text-center animate-in fade-in zoom-in duration-500">
               <div className="w-24 h-24 bg-surface rounded-full flex items-center justify-center mb-6 relative">
