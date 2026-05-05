@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import CategoryBar from './components/CategoryBar';
@@ -8,6 +8,8 @@ import MobileNav from './components/MobileNav';
 import { useAuth } from './context/AuthContext';
 import AvatarModal from './components/AvatarModal';
 import AuthModal from './components/AuthModal';
+
+import ProductGrid from './components/ProductGrid';
 
 function App() {
   const [selectedVideo, setSelectedVideo] = useState(null);
@@ -35,8 +37,14 @@ function App() {
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-    setActiveTab('home');
+    if (activeTab !== 'products') {
+      setActiveTab('home');
+    }
   };
+
+  useEffect(() => {
+    setSearchQuery('');
+  }, [activeTab])
 
   return (
     <div className="app-container">
@@ -55,7 +63,7 @@ function App() {
                   <div className="flex flex-col items-center text-center">
                     <div className="w-24 h-24 rounded-full border-2 border-border p-1 mb-4">
                       <img 
-                        src={user.avatar?.url || `https://avatar.iran.liara.run/public/boy?username=${user.username}`} 
+                        src={user.avatar?.url || `https://api.dicebear.com/7.x/initials/svg?seed=${user.username}`} 
                         alt={user.username} 
                         className="w-full h-full rounded-full object-cover"
                       />
@@ -116,6 +124,8 @@ function App() {
                 sortBy={sortBy}
               />
             </>
+          ) : activeTab === 'products' ? (
+            <ProductGrid searchQuery={searchQuery} />
           ) : (
             <div className="flex flex-col items-center justify-center h-[calc(100vh-var(--height-navbar)-80px)] text-center animate-in fade-in zoom-in duration-500">
               <div className="w-24 h-24 bg-surface rounded-full flex items-center justify-center mb-6 relative">

@@ -28,7 +28,14 @@ export const AuthProvider = ({ children }) => {
       });
       const json = await response.json();
       if (json.success) {
-        setUser(json.data);
+        if (json.data.avatar.url === "https://via.placeholder.com/200x200.png") {
+          setUser({
+            ...json.data,
+            avatar: {
+              url: `https://api.dicebear.com/7.x/initials/svg?seed=${json.data.username}`
+            }
+          });
+        } else setUser(json.data);
       } else {
         logout();
       }

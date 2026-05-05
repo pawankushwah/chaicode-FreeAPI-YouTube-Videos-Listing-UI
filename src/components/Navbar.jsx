@@ -61,7 +61,7 @@ const Navbar = ({ onMenuClick, onSearch }) => {
       <div className="flex items-center gap-4">
         <button
           className="p-2 rounded-full hover:bg-surface-hover hidden lg:block"
-          onClick={onMenuClick}
+          onClick={(e) => { onMenuClick(e); setSearchInput(''); setIsMobileSearchOpen(false); }}
         >
           <svg viewBox="0 0 24 24" width="24" height="24" className="text-white">
             <path fill="currentColor" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path>
@@ -138,7 +138,7 @@ const Navbar = ({ onMenuClick, onSearch }) => {
                 className="w-8 h-8 rounded-full bg-surface-hover flex items-center justify-center cursor-pointer border border-border overflow-hidden active:scale-95 transition-transform"
               >
                 <img 
-                  src={user.avatar?.url || `https://avatar.iran.liara.run/public/boy?username=${user.username}`} 
+                  src={user.avatar?.url || `https://api.dicebear.com/7.x/initials/svg?seed=${user.username}`} 
                   alt={user.username} 
                   className="w-full h-full object-cover"
                 />
