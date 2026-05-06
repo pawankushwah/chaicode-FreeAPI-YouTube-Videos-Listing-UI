@@ -141,14 +141,17 @@ const ProductGrid = ({ searchQuery }) => {
   }
 
   return (
-    <div className="p-4">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 mb-6">
-        <div>
-          <h1 className="text-2xl font-black text-text-primary tracking-tight">Shopping</h1>
-          <p className="text-sm text-text-secondary">Discover amazing deals on random products</p>
-        </div>
-        <div className="flex items-center gap-2">
-           <span className="text-xs text-text-secondary">{products.length} Items Displayed</span>
+    <div className="p-6 md:p-10 max-w-[1600px] mx-auto min-h-screen">
+      <div className="mb-16 relative">
+        <div className="absolute -top-10 -left-10 w-40 h-40 bg-brand/5 blur-3xl rounded-full" />
+        <h1 className="text-4xl md:text-6xl font-black text-text-primary tracking-tight mb-4 relative z-10">
+          Shop <span className="text-brand">Market</span>
+        </h1>
+        <p className="text-text-secondary text-lg md:text-xl max-w-2xl relative z-10">
+          Discover amazing deals on random products. Quality meets variety in our curated marketplace.
+        </p>
+        <div className="mt-4 text-xs font-bold text-text-secondary uppercase tracking-widest relative z-10">
+          {products.length} Items Displayed
         </div>
       </div>
       

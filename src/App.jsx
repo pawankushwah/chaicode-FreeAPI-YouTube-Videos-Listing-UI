@@ -11,6 +11,10 @@ import AuthModal from './components/AuthModal';
 
 import ProductGrid from './components/ProductGrid';
 import QuoteGrid from './components/QuoteGrid';
+import JokeGrid from './components/JokeGrid';
+import CatViewer from './components/CatViewer';
+import MealGrid from './components/MealGrid';
+import UserGrid from './components/UserGrid';
 import { useNavigate } from 'react-router-dom';
 
 function App({ tab: activeTab }) {
@@ -122,18 +126,35 @@ function App({ tab: activeTab }) {
               )}
             </div>
           ) : activeTab === 'home' ? (
-            <>
+            <div className="p-6 md:p-10 max-w-[1600px] mx-auto min-h-screen">
+              <div className="mb-12 relative">
+                <div className="absolute -top-10 -left-10 w-40 h-40 bg-brand/5 blur-3xl rounded-full" />
+                <h1 className="text-4xl md:text-6xl font-black text-text-primary tracking-tight mb-4 relative z-10">
+                  Featured <span className="text-brand">Videos</span>
+                </h1>
+                <p className="text-text-secondary text-lg md:text-xl max-w-2xl relative z-10">
+                  Explore the most engaging and high-quality content from across the globe. Curated just for you.
+                </p>
+              </div>
               <CategoryBar onSortChange={setSortBy} currentSort={sortBy} />
               <VideoGrid 
                 onVideoClick={handleVideoClick} 
                 searchQuery={searchQuery}
                 sortBy={sortBy}
               />
-            </>
+            </div>
           ) : activeTab === 'products' ? (
             <ProductGrid searchQuery={searchQuery} />
           ) : activeTab === 'quotes' ? (
             <QuoteGrid />
+          ) : activeTab === 'jokes' ? (
+            <JokeGrid />
+          ) : activeTab === 'cats' ? (
+            <CatViewer />
+          ) : activeTab === 'meals' ? (
+            <MealGrid />
+          ) : activeTab === 'users' ? (
+            <UserGrid />
           ) : (
             <div className="flex flex-col items-center justify-center h-[calc(100vh-var(--height-navbar)-80px)] text-center animate-in fade-in zoom-in duration-500">
               <div className="w-24 h-24 bg-surface rounded-full flex items-center justify-center mb-6 relative">
@@ -148,9 +169,9 @@ function App({ tab: activeTab }) {
               </p>
               <button 
                 onClick={() => setActiveTab('home')}
-                className="mt-8 px-6 py-2.5 bg-brand text-white rounded-full font-bold hover:bg-red-700 transition-all hover:scale-105 active:scale-95"
+                className="mt-8 px-6 py-2.5 bg-brand text-white rounded-full font-bold hover:opacity-90 transition-all hover:scale-105 active:scale-95"
               >
-                Back to Home
+                Back to Videos
               </button>
             </div>
           )}
