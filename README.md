@@ -2,7 +2,7 @@
 
 A premium, all-in-one exploration platform powered by **FreeAPI**. This application features a suite of high-fidelity modules ranging from video streaming and e-commerce to gourmet recipes and community directories—all wrapped in a stunning "Premium Glassmorphism" aesthetic.
 
-![ChaiTube Header](https://via.placeholder.com/1200x400/8b5cf6/ffffff?text=FreeAPI+Explorer+-+The+Ultimate+Dashboard)
+![ChaiTube Header](./public/app.jpeg)
 
 ## ✨ Features
 
