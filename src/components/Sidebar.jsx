@@ -37,7 +37,7 @@ const Sidebar = ({ isOpen, activeTab, onTabChange }) => {
       
       {isOpen && <hr className="border-none border-t border-border my-3 mx-3" />}
       
-      <div className="px-3">
+      {/* <div className="px-3">
         {secondaryItems.map((item) => (
           <div 
             key={item.id} 
@@ -51,7 +51,7 @@ const Sidebar = ({ isOpen, activeTab, onTabChange }) => {
             <span className={`${isOpen ? 'text-sm' : 'hidden'} ${activeTab === item.id ? 'text-white font-bold' : 'text-text-secondary'}`}>{item.label}</span>
           </div>
         ))}
-      </div>
+      </div> */}
     </aside>
   );
 };

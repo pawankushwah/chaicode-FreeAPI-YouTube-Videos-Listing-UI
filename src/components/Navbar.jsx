@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import Youtube_Logo from "../assets/youtube.svg";
 import AuthModal from "./AuthModal";
@@ -11,6 +11,8 @@ const Navbar = ({ activeTab, onMenuClick, onSearch }) => {
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const searchInputRef = useRef(null);
+  const mobileSearchInputRef = useRef(null);
   const { user, logout } = useAuth();
   
   const handleVoiceSearch = () => {
@@ -25,7 +27,11 @@ const Navbar = ({ activeTab, onMenuClick, onSearch }) => {
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
 
-    recognition.onstart = () => setIsListening(true);
+    recognition.onstart = () => {
+      setIsListening(true);
+      searchInputRef.current?.focus();
+      mobileSearchInputRef.current?.focus();
+    };
     recognition.onend = () => setIsListening(false);
     recognition.onerror = () => setIsListening(false);
 
@@ -49,7 +55,7 @@ const Navbar = ({ activeTab, onMenuClick, onSearch }) => {
     users: 'People'
   };
 
-  const currentPlaceholder = `Search ${searchLabels[activeTab] || 'anything'}`;
+  const currentPlaceholder = `Search ${searchLabels[activeTab] || ''}`;
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -73,6 +79,7 @@ const Navbar = ({ activeTab, onMenuClick, onSearch }) => {
         <form className="flex-1 flex items-center" onSubmit={handleSearchSubmit}>
           <div className="flex flex-1 bg-[#121212] border border-border rounded-full overflow-hidden">
             <input
+              ref={mobileSearchInputRef}
               type="text"
               placeholder={currentPlaceholder}
               autoFocus
@@ -117,13 +124,14 @@ const Navbar = ({ activeTab, onMenuClick, onSearch }) => {
         </div>
       </div>
 
-      <form
+      {activeTab !== 'you' && <form
         className="flex-1 max-w-[720px] hidden md:flex justify-center"
         onSubmit={handleSearchSubmit}
       >
         <div className="flex items-center gap-3 w-full">
           <div className="flex flex-1 bg-[#121212] border border-border rounded-full overflow-hidden ml-8">
             <input
+              ref={searchInputRef}
               type="text"
               placeholder={currentPlaceholder}
               className="flex-1 px-4 py-2 text-lg bg-transparent border-none outline-none text-white"
@@ -150,7 +158,7 @@ const Navbar = ({ activeTab, onMenuClick, onSearch }) => {
             </svg>
           </button>
         </div>
-      </form>
+      </form>}
 
       <div className="flex items-center gap-1">
         <button 

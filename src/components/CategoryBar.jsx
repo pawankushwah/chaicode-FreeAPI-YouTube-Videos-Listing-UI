@@ -23,7 +23,7 @@ const CategoryBar = ({ onSortChange, currentSort }) => {
             {option.label}
           </button>
         ))}
-        <div className="w-[1px] h-6 bg-border mx-1 self-center" />
+        {/* <div className="w-[1px] h-6 bg-border mx-1 self-center" />
         {categories.map((category, index) => (
           <button 
             key={index} 
@@ -31,7 +31,7 @@ const CategoryBar = ({ onSortChange, currentSort }) => {
           >
             {category}
           </button>
-        ))}
+        ))} */}
       </div>
     </div>
   );
