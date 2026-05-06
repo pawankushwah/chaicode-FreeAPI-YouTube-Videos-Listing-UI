@@ -1,19 +1,20 @@
 import React from 'react';
+import { Home, ShoppingBag, Quote, Laugh, Cat, Utensils, Users, Library, History } from 'lucide-react';
 
 const Sidebar = ({ isOpen, activeTab, onTabChange }) => {
   const menuItems = [
-    { id: 'home', icon: <path d="M4 21V10.08l8-6.91 8 6.91V21h-6v-6h-4v6H4z"/>, label: 'Videos' },
-    { id: 'products', icon: <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>, label: 'Products' },
-    { id: 'quotes', icon: <path d="M14 17h3.35l-1 3H14v-3zm-9 0h3.35l-1 3H5v-3zM11 7H4v10h7V7zm2 0h7v10h-7V7z"/>, label: 'Quotes' },
-    { id: 'jokes', icon: <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9h2V9H7v2zm8 0h2V9h-2v2zm-3 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>, label: 'Jokes' },
-    { id: 'cats', icon: <path d="M12 2c-1.1 0-2 .9-2 2v.2c-1.3.4-2.4 1.2-3.2 2.3-.3-.1-.7-.2-1-.2-1.7 0-3 1.3-3 3 0 .7.3 1.3.7 1.8-.4.8-.7 1.7-.7 2.7 0 3.3 2.7 6 6 6s6-2.7 6-6c0-1-.3-1.9-.7-2.7.4-.5.7-1.1.7-1.8 0-1.7-1.3-3-3-3-.3 0-.7.1-1 .2-.8-1.1-1.9-1.9-3.2-2.3V4c0-1.1-.9-2-2-2z"/>, label: 'Cats' },
-    { id: 'meals', icon: <path d="M3 2v7c0 1.1.9 2 2 2h4c1.1 0 2-.9 2-2V2M7 2v20M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3v7"/>, label: 'Meals' },
-    { id: 'users', icon: <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm13 14v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>, label: 'Users' },
+    { id: 'home', icon: <Home size={24} />, label: 'Videos' },
+    { id: 'products', icon: <ShoppingBag size={24} />, label: 'Products' },
+    { id: 'quotes', icon: <Quote size={24} />, label: 'Quotes' },
+    { id: 'jokes', icon: <Laugh size={24} />, label: 'Jokes' },
+    { id: 'cats', icon: <Cat size={24} />, label: 'Cats' },
+    { id: 'meals', icon: <Utensils size={24} />, label: 'Meals' },
+    { id: 'users', icon: <Users size={24} />, label: 'Users' },
   ];
 
   const secondaryItems = [
-    { id: 'library', icon: <path d="M11 7l-5 5 5 5V7zM13 17l5-5-5-5v10z"/>, label: 'Library' },
-    { id: 'history', icon: <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>, label: 'History' },
+    { id: 'library', icon: <Library size={24} />, label: 'Library' },
+    { id: 'history', icon: <History size={24} />, label: 'History' },
   ];
 
   return (
@@ -26,10 +27,10 @@ const Sidebar = ({ isOpen, activeTab, onTabChange }) => {
             className={`flex ${isOpen ? 'flex-row gap-6 px-3' : 'flex-col items-center justify-center gap-1 px-1'} py-2.5 rounded-xl cursor-pointer transition-colors ${activeTab === item.id ? 'bg-surface-hover font-medium' : 'hover:bg-surface-hover'} mb-1`}
             title={!isOpen ? item.label : ''}
           >
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" className={`shrink-0 ${activeTab === item.id ? 'text-white' : ''}`}>
+            <div className={`shrink-0 ${activeTab === item.id ? 'text-brand' : 'text-text-secondary'}`}>
               {item.icon}
-            </svg>
-            <span className={`${isOpen ? 'text-sm' : 'hidden'} ${activeTab === item.id ? 'text-white' : ''}`}>{item.label}</span>
+            </div>
+            <span className={`${isOpen ? 'text-sm' : 'hidden'} ${activeTab === item.id ? 'text-white font-bold' : 'text-text-secondary'}`}>{item.label}</span>
           </div>
         ))}
       </div>
@@ -37,19 +38,19 @@ const Sidebar = ({ isOpen, activeTab, onTabChange }) => {
       {isOpen && <hr className="border-none border-t border-border my-3 mx-3" />}
       
       <div className="px-3">
-        {/* {secondaryItems.map((item) => (
+        {secondaryItems.map((item) => (
           <div 
             key={item.id} 
             onClick={() => onTabChange(item.id)}
             className={`flex ${isOpen ? 'flex-row gap-6 px-3' : 'flex-col items-center justify-center gap-1 px-1'} py-2.5 rounded-xl cursor-pointer transition-colors ${activeTab === item.id ? 'bg-surface-hover font-medium' : 'hover:bg-surface-hover'} mb-1`}
             title={!isOpen ? item.label : ''}
           >
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" className={`shrink-0 ${activeTab === item.id ? 'text-white' : ''}`}>
+            <div className={`shrink-0 ${activeTab === item.id ? 'text-brand' : 'text-text-secondary'}`}>
               {item.icon}
-            </svg>
-            <span className={`${isOpen ? 'text-sm' : 'hidden'} ${activeTab === item.id ? 'text-white' : ''}`}>{item.label}</span>
+            </div>
+            <span className={`${isOpen ? 'text-sm' : 'hidden'} ${activeTab === item.id ? 'text-white font-bold' : 'text-text-secondary'}`}>{item.label}</span>
           </div>
-        ))} */}
+        ))}
       </div>
     </aside>
   );

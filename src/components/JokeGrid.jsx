@@ -22,7 +22,6 @@ const JokeCard = ({ joke }) => {
     }
   };
 
-  // Generate a random gradient based on joke ID
   const gradients = [
     'from-pink-500/10 to-purple-500/10',
     'from-blue-500/10 to-cyan-500/10',
@@ -34,7 +33,6 @@ const JokeCard = ({ joke }) => {
 
   return (
     <div className={`group relative bg-surface border border-border rounded-3xl p-8 hover:border-brand/50 transition-all duration-500 flex flex-col h-full overflow-hidden hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)]`}>
-      {/* Background Decor */}
       <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${gradient} rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-700`} />
       
       <div className="relative z-10 mb-6">
@@ -85,7 +83,7 @@ const JokeCard = ({ joke }) => {
   );
 };
 
-const JokeGrid = () => {
+const JokeGrid = ({ searchQuery }) => {
   const [jokes, setJokes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -94,15 +92,21 @@ const JokeGrid = () => {
   const [hasMore, setHasMore] = useState(false);
 
   useEffect(() => {
+    setJokes([]);
+    setPage(1);
     fetchJokes(1, false);
-  }, []);
+  }, [searchQuery]);
 
   const fetchJokes = async (pageNum, isAppend = false) => {
     try {
       if (isAppend) setLoadingMore(true);
       else setLoading(true);
 
-      const response = await fetch(`https://api.freeapi.app/api/v1/public/randomjokes?page=${pageNum}&limit=9`);
+      const url = searchQuery 
+        ? `https://api.freeapi.app/api/v1/public/randomjokes?page=${pageNum}&limit=9&query=${searchQuery}`
+        : `https://api.freeapi.app/api/v1/public/randomjokes?page=${pageNum}&limit=9`;
+
+      const response = await fetch(url);
       const json = await response.json();
 
       if (json.success) {
@@ -127,31 +131,13 @@ const JokeGrid = () => {
 
   if (loading && page === 1) {
     return (
-      <div className="p-6 max-w-7xl mx-auto">
+      <div className="p-6 md:p-10 max-w-7xl mx-auto">
         <div className="mb-12 h-20 w-64 bg-surface rounded-2xl animate-pulse" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[...Array(6)].map((_, i) => (
             <div key={i} className="bg-surface rounded-[2rem] h-80 animate-pulse border border-border shadow-lg" />
           ))}
         </div>
-      </div>
-    );
-  }
-
-  if (error && jokes.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 text-center px-4">
-        <div className="w-20 h-20 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mb-6">
-          <Laugh size={40} className="rotate-180" />
-        </div>
-        <h2 className="text-2xl font-bold text-text-primary mb-2">Oops! Something went wrong</h2>
-        <p className="text-text-secondary max-w-md mb-8">{error}</p>
-        <button 
-          onClick={() => fetchJokes(1, false)}
-          className="px-8 py-3 bg-brand text-white rounded-full font-bold hover:scale-105 transition-transform"
-        >
-          Try Again
-        </button>
       </div>
     );
   }
@@ -164,15 +150,23 @@ const JokeGrid = () => {
           The Laugh <span className="text-brand">Factory</span>
         </h1>
         <p className="text-text-secondary text-lg md:text-xl max-w-2xl relative z-10">
-          Handpicked collection of the web's funniest jokes. Because everyone deserves a good laugh today.
+          {searchQuery ? `Showing results for "${searchQuery}"` : "Handpicked collection of the web's funniest jokes. Because everyone deserves a good laugh today."}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {jokes.map((joke) => (
-          <JokeCard key={`${joke.id}-${Math.random()}`} joke={joke} />
-        ))}
-      </div>
+      {jokes.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {jokes.map((joke) => (
+            <JokeCard key={`${joke.id}-${Math.random()}`} joke={joke} />
+          ))}
+        </div>
+      ) : !loading && (
+        <div className="text-center py-20 bg-surface border border-border rounded-[3rem]">
+          <Laugh size={60} className="mx-auto text-brand/20 mb-6" />
+          <h2 className="text-2xl font-black text-text-primary mb-2">No jokes found</h2>
+          <p className="text-text-secondary">Try searching for something else!</p>
+        </div>
+      )}
 
       {hasMore && (
         <div className="flex justify-center mt-20 mb-12">

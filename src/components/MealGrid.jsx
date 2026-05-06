@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Utensils, Globe, Tag, Play, Info, ChevronRight } from 'lucide-react';
+import { Utensils, Globe, Tag, Play, Info, ChevronRight, ChefHat } from 'lucide-react';
 import MealModal from './MealModal';
 
 const MealCard = ({ meal, onClick }) => {
@@ -59,20 +59,13 @@ const MealCard = ({ meal, onClick }) => {
           <span className="text-[10px] font-black text-brand uppercase tracking-widest flex items-center gap-1">
             View Recipe <ChevronRight size={14} />
           </span>
-          <div className="flex -space-x-2">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="w-6 h-6 rounded-full border-2 border-surface bg-surface-hover flex items-center justify-center text-[8px] font-bold text-text-secondary">
-                {String.fromCharCode(65 + i)}
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </div>
   );
 };
 
-const MealGrid = () => {
+const MealGrid = ({ searchQuery }) => {
   const [meals, setMeals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -82,15 +75,21 @@ const MealGrid = () => {
   const [hasMore, setHasMore] = useState(false);
 
   useEffect(() => {
+    setMeals([]);
+    setPage(1);
     fetchMeals(1, false);
-  }, []);
+  }, [searchQuery]);
 
   const fetchMeals = async (pageNum, isAppend = false) => {
     try {
       if (isAppend) setLoadingMore(true);
       else setLoading(true);
 
-      const response = await fetch(`https://api.freeapi.app/api/v1/public/meals?page=${pageNum}&limit=9`);
+      const url = searchQuery
+        ? `https://api.freeapi.app/api/v1/public/meals?page=${pageNum}&limit=9&query=${searchQuery}`
+        : `https://api.freeapi.app/api/v1/public/meals?page=${pageNum}&limit=9`;
+
+      const response = await fetch(url);
       const json = await response.json();
 
       if (json.success) {
@@ -119,7 +118,7 @@ const MealGrid = () => {
         <div className="mb-12 h-20 w-64 bg-surface rounded-2xl animate-pulse" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-surface rounded-[2rem] aspect-[4/5] animate-pulse border border-border shadow-lg" />
+            <div key={i} className="bg-surface rounded-[2rem] aspect-[4/5] animate-pulse border border-border" />
           ))}
         </div>
       </div>
@@ -134,19 +133,27 @@ const MealGrid = () => {
           Gourmet <span className="text-brand">Kitchen</span>
         </h1>
         <p className="text-text-secondary text-lg md:text-xl max-w-2xl relative z-10">
-          Discover a world of flavors with our curated collection of delicious recipes. From street food to fine dining.
+          {searchQuery ? `Exploring recipes for "${searchQuery}"` : "Discover a world of flavors with our curated collection of delicious recipes."}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {meals.map((meal) => (
-          <MealCard 
-            key={`${meal.idMeal}-${Math.random()}`} 
-            meal={meal} 
-            onClick={setSelectedMeal}
-          />
-        ))}
-      </div>
+      {meals.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {meals.map((meal) => (
+            <MealCard 
+              key={`${meal.idMeal}-${Math.random()}`} 
+              meal={meal} 
+              onClick={setSelectedMeal}
+            />
+          ))}
+        </div>
+      ) : !loading && (
+        <div className="text-center py-20 bg-surface border border-border rounded-[3rem]">
+          <ChefHat size={60} className="mx-auto text-brand/20 mb-6" />
+          <h2 className="text-2xl font-black text-text-primary mb-2">No recipes found</h2>
+          <p className="text-text-secondary">Try searching for a different dish or ingredient!</p>
+        </div>
+      )}
 
       {hasMore && (
         <div className="flex justify-center mt-20 mb-12">

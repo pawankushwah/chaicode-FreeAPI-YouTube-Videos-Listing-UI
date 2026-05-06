@@ -15,13 +15,14 @@ import JokeGrid from './components/JokeGrid';
 import CatViewer from './components/CatViewer';
 import MealGrid from './components/MealGrid';
 import UserGrid from './components/UserGrid';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 function App({ tab: activeTab }) {
   const navigate = useNavigate();
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchQuery = searchParams.get('q') || '';
   const [sortBy, setSortBy] = useState('latest');
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -41,20 +42,18 @@ function App({ tab: activeTab }) {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const setActiveTab = (tab) => {
-    navigate(`/${tab}`);
-  }
-
   const handleSearch = (query) => {
-    setSearchQuery(query);
-    if (activeTab !== 'products') {
-      setActiveTab('home');
+    if (query) {
+      setSearchParams({ q: query });
+    } else {
+      setSearchParams({});
     }
   };
 
-  useEffect(() => {
-    setSearchQuery("");
-  }, [activeTab]);
+  const handleTabChange = (tabId) => {
+    setSearchParams({}); // Clear search on tab change
+    navigate(`/${tabId === 'home' ? '' : tabId}`);
+  };
 
   return (
     <div className="app-container">
@@ -63,7 +62,7 @@ function App({ tab: activeTab }) {
         <Sidebar 
           isOpen={isSidebarOpen} 
           activeTab={activeTab} 
-          onTabChange={setActiveTab} 
+          onTabChange={handleTabChange} 
         />
         <main className="content-area pb-20">
           {activeTab === 'you' ? (
@@ -146,15 +145,15 @@ function App({ tab: activeTab }) {
           ) : activeTab === 'products' ? (
             <ProductGrid searchQuery={searchQuery} />
           ) : activeTab === 'quotes' ? (
-            <QuoteGrid />
+            <QuoteGrid searchQuery={searchQuery} />
           ) : activeTab === 'jokes' ? (
-            <JokeGrid />
+            <JokeGrid searchQuery={searchQuery} />
           ) : activeTab === 'cats' ? (
-            <CatViewer />
+            <CatViewer searchQuery={searchQuery} />
           ) : activeTab === 'meals' ? (
-            <MealGrid />
+            <MealGrid searchQuery={searchQuery} />
           ) : activeTab === 'users' ? (
-            <UserGrid />
+            <UserGrid searchQuery={searchQuery} />
           ) : (
             <div className="flex flex-col items-center justify-center h-[calc(100vh-var(--height-navbar)-80px)] text-center animate-in fade-in zoom-in duration-500">
               <div className="w-24 h-24 bg-surface rounded-full flex items-center justify-center mb-6 relative">
@@ -168,7 +167,7 @@ function App({ tab: activeTab }) {
                 We're working hard to bring this feature to life. Stay tuned for updates!
               </p>
               <button 
-                onClick={() => setActiveTab('home')}
+                onClick={() => handleTabChange('home')}
                 className="mt-8 px-6 py-2.5 bg-brand text-white rounded-full font-bold hover:opacity-90 transition-all hover:scale-105 active:scale-95"
               >
                 Back to Videos
@@ -178,7 +177,7 @@ function App({ tab: activeTab }) {
         </main>
       </div>
       
-      <MobileNav activeTab={activeTab} onTabChange={setActiveTab} />
+      <MobileNav activeTab={activeTab} onTabChange={handleTabChange} />
 
       {selectedVideo && (
         <VideoModal 

@@ -45,7 +45,7 @@
   }
 
   .content-area {
-    @apply flex-1 overflow-y-auto px-4 bg-bg;
+    @apply flex-1 overflow-y-auto bg-bg;
   }
 
   .no-scrollbar::-webkit-scrollbar {

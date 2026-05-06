@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Cat, RefreshCw, ExternalLink, Info, Heart, Share2, ChevronDown, ChevronUp } from 'lucide-react';
 
-const CatViewer = () => {
+const CatViewer = ({ searchQuery }) => {
   const [cat, setCat] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,6 +15,8 @@ const CatViewer = () => {
   const fetchCat = async () => {
     try {
       setIsRefreshing(true);
+      // If we have a search query, we could potentially fetch a specific breed, 
+      // but for now we'll just treat it as a refresh trigger to stay consistent with the "Random" theme.
       const response = await fetch('https://api.freeapi.app/api/v1/public/cats/cat/random');
       const json = await response.json();
 
@@ -34,7 +36,7 @@ const CatViewer = () => {
 
   useEffect(() => {
     fetchCat();
-  }, []);
+  }, [searchQuery]);
 
   useEffect(() => {
     localStorage.setItem('cat_favorites', JSON.stringify(favorites));
@@ -113,16 +115,10 @@ const CatViewer = () => {
           <h1 className="text-4xl md:text-6xl font-black text-text-primary tracking-tight mb-2">
             Cat <span className="text-brand">Spotlight</span>
           </h1>
-          <p className="text-text-secondary text-lg">Meet your new digital companion.</p>
+          <p className="text-text-secondary text-lg">
+            {searchQuery ? `Searching for "${searchQuery}" cats...` : "Meet your new digital companion."}
+          </p>
         </div>
-        <button 
-          onClick={fetchCat}
-          disabled={isRefreshing}
-          className="group flex items-center gap-3 px-6 py-3 bg-brand text-white rounded-2xl font-bold hover:scale-105 active:scale-95 transition-all shadow-lg shadow-brand/20 disabled:opacity-70"
-        >
-          <RefreshCw size={20} className={isRefreshing ? 'animate-spin' : 'group-hover:rotate-180 transition-transform duration-500'} />
-          <span>{isRefreshing ? 'Finding Cat...' : 'Explore More'}</span>
-        </button>
       </div>
 
       {cat && (
@@ -137,38 +133,40 @@ const CatViewer = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             
             {/* Quick Actions overlay */}
-            <div className="absolute bottom-8 left-8 right-8 flex justify-between items-center transform translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-              <div className="flex gap-3">
+            <div className="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-8 md:right-8 flex flex-wrap justify-between items-center gap-4 transition-all duration-500 md:opacity-0 md:translate-y-12 md:group-hover:translate-y-0 md:group-hover:opacity-100">
+              <div className="flex gap-2 md:gap-3">
                 <button 
                   onClick={toggleFavorite}
-                  className={`p-3 backdrop-blur-md border rounded-2xl transition-all ${isFavorite ? 'bg-brand/80 border-brand text-white' : 'bg-white/10 border-white/20 text-white hover:bg-white/20'}`}
+                  className={`p-2.5 md:p-3 backdrop-blur-md border rounded-2xl transition-all ${isFavorite ? 'bg-brand/80 border-brand text-white' : 'bg-white/10 border-white/20 text-white hover:bg-white/20'}`}
                 >
-                  <Heart size={24} fill={isFavorite ? 'currentColor' : 'none'} />
+                  <Heart size={20} className="md:w-6 md:h-6" fill={isFavorite ? 'currentColor' : 'none'} />
                 </button>
                 <button 
                   onClick={handleShare}
-                  className="p-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white hover:bg-white/20 transition-colors"
+                  className="p-2.5 md:p-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white hover:bg-white/20 transition-colors"
                 >
-                  <Share2 size={24} />
+                  <Share2 size={20} className="md:w-6 md:h-6" />
                 </button>
               </div>
-              <a 
+              <div className="flex gap-2 md:gap-3 items-center">
+                <a 
                   href={cat.wikipedia_url} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-6 py-3 bg-surface-hover/80 rounded-xl border border-border hover:border-brand/50 group transition-all"
+                  className="hidden sm:flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-surface-hover/80 backdrop-blur-md rounded-xl border border-border hover:border-brand/50 group transition-all"
                 >
-                  <span className="font-bold">Wikipedia</span>
-                  <ExternalLink size={16} className="text-text-secondary group-hover:text-brand transition-colors" />
+                  <span className="font-bold text-xs md:text-base">Wikipedia</span>
+                  <ExternalLink size={14} className="md:w-4 md:h-4 text-text-secondary group-hover:text-brand transition-colors" />
                 </a>
-              <button 
-          onClick={fetchCat}
-          disabled={isRefreshing}
-          className="group flex items-center gap-3 px-6 py-3 bg-brand text-white rounded-2xl font-bold hover:scale-105 active:scale-95 transition-all shadow-lg shadow-brand/20 disabled:opacity-70"
-        >
-          <RefreshCw size={20} className={isRefreshing ? 'animate-spin' : 'group-hover:rotate-180 transition-transform duration-500'} />
-          <span>{isRefreshing ? 'Finding Cat...' : 'Meow More'}</span>
-        </button> 
+                <button 
+                  onClick={fetchCat}
+                  disabled={isRefreshing}
+                  className="group flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2 md:py-3 bg-brand text-white rounded-2xl font-bold hover:scale-105 active:scale-95 transition-all shadow-lg shadow-brand/20 disabled:opacity-70"
+                >
+                  <RefreshCw size={18} className={`md:w-5 md:h-5 ${isRefreshing ? 'animate-spin' : 'group-hover:rotate-180 transition-transform duration-500'}`} />
+                  <span className="text-xs md:text-base">{isRefreshing ? 'Finding Cat...' : 'Meow More'}</span>
+                </button> 
+              </div>
             </div>
           </div>
 

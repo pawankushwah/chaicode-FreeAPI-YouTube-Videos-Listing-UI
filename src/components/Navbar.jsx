@@ -10,7 +10,46 @@ const Navbar = ({ activeTab, onMenuClick, onSearch }) => {
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const { user, logout } = useAuth();
+  
+  const handleVoiceSearch = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Voice search is not supported in this browser.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => setIsListening(true);
+    recognition.onend = () => setIsListening(false);
+    recognition.onerror = () => setIsListening(false);
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setSearchInput(transcript);
+      onSearch(transcript);
+      setIsMobileSearchOpen(false);
+    };
+
+    recognition.start();
+  };
+  
+  const searchLabels = {
+    home: 'Videos',
+    products: 'Products',
+    quotes: 'Quotes',
+    jokes: 'Jokes',
+    cats: 'Cats',
+    meals: 'Recipes',
+    users: 'People'
+  };
+
+  const currentPlaceholder = `Search ${searchLabels[activeTab] || 'anything'}`;
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -35,7 +74,7 @@ const Navbar = ({ activeTab, onMenuClick, onSearch }) => {
           <div className="flex flex-1 bg-[#121212] border border-border rounded-full overflow-hidden">
             <input
               type="text"
-              placeholder="Search"
+              placeholder={currentPlaceholder}
               autoFocus
               className="flex-1 px-4 py-1.5 text-lg bg-transparent border-none outline-none text-white"
               value={searchInput}
@@ -48,10 +87,13 @@ const Navbar = ({ activeTab, onMenuClick, onSearch }) => {
             </button>
           </div>
         </form>
-        <button className="bg-[#181818] aspect-square w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-hover ml-2">
-          <svg viewBox="0 0 24 24" width="22" height="22" className="text-white">
-            <path fill="currentColor" d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"></path>
-            <path fill="currentColor" d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"></path>
+        <button 
+          onClick={handleVoiceSearch}
+          className={`bg-[#181818] aspect-square w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-hover ml-2 transition-all ${isListening ? 'bg-brand/20 text-brand scale-110 shadow-lg shadow-brand/20' : 'text-white'}`}
+        >
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" className={isListening ? 'animate-pulse' : ''}>
+            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"></path>
+            <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"></path>
           </svg>
         </button>
       </nav>
@@ -83,7 +125,7 @@ const Navbar = ({ activeTab, onMenuClick, onSearch }) => {
           <div className="flex flex-1 bg-[#121212] border border-border rounded-full overflow-hidden ml-8">
             <input
               type="text"
-              placeholder="Search"
+              placeholder={currentPlaceholder}
               className="flex-1 px-4 py-2 text-lg bg-transparent border-none outline-none text-white"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
@@ -97,10 +139,14 @@ const Navbar = ({ activeTab, onMenuClick, onSearch }) => {
               </svg>
             </button>
           </div>
-          <button type="button" className="bg-[#181818] w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-hover">
-            <svg viewBox="0 0 24 24" width="24" height="24" className="text-white">
-              <path fill="currentColor" d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"></path>
-              <path fill="currentColor" d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"></path>
+          <button 
+            type="button" 
+            onClick={handleVoiceSearch}
+            className={`w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-hover transition-all ${isListening ? 'bg-brand/20 text-brand scale-110 shadow-lg shadow-brand/20' : 'bg-[#181818] text-white'}`}
+          >
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" className={isListening ? 'animate-pulse' : ''}>
+              <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"></path>
+              <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"></path>
             </svg>
           </button>
         </div>

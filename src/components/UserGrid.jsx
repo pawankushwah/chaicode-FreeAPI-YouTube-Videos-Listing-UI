@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Mail, MapPin, Phone, Calendar, ArrowRight, RefreshCw } from 'lucide-react';
+import { User, Mail, MapPin, Phone, Calendar, ArrowRight, RefreshCw, Users } from 'lucide-react';
 import UserModal from './UserModal';
 
 const UserCard = ({ user, onClick }) => {
@@ -8,7 +8,6 @@ const UserCard = ({ user, onClick }) => {
       onClick={() => onClick(user)}
       className="group bg-surface border border-border rounded-[2.5rem] p-8 hover:border-brand/50 transition-all duration-500 flex flex-col items-center text-center cursor-pointer hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden"
     >
-      {/* Background Glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-brand/5 blur-3xl rounded-full group-hover:scale-150 transition-transform duration-700" />
       
       <div className="relative z-10 mb-6">
@@ -28,7 +27,7 @@ const UserCard = ({ user, onClick }) => {
         <h3 className="text-2xl font-black text-text-primary group-hover:text-brand transition-colors">
           {user.name.title}. {user.name.first} {user.name.last}
         </h3>
-        <p className="text-sm font-medium text-text-secondary flex items-center justify-center gap-2">
+        <p className="text-sm font-medium text-text-secondary flex items-center justify-center gap-2 truncate px-4">
           <Mail size={14} />
           {user.email}
         </p>
@@ -54,7 +53,7 @@ const UserCard = ({ user, onClick }) => {
   );
 };
 
-const UserGrid = () => {
+const UserGrid = ({ searchQuery }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -64,15 +63,21 @@ const UserGrid = () => {
   const [hasMore, setHasMore] = useState(false);
 
   useEffect(() => {
+    setUsers([]);
+    setPage(1);
     fetchUsers(1, false);
-  }, []);
+  }, [searchQuery]);
 
   const fetchUsers = async (pageNum, isAppend = false) => {
     try {
       if (isAppend) setLoadingMore(true);
       else setLoading(true);
 
-      const response = await fetch(`https://api.freeapi.app/api/v1/public/randomusers?page=${pageNum}&limit=9`);
+      const url = searchQuery
+        ? `https://api.freeapi.app/api/v1/public/randomusers?page=${pageNum}&limit=9&query=${searchQuery}`
+        : `https://api.freeapi.app/api/v1/public/randomusers?page=${pageNum}&limit=9`;
+
+      const response = await fetch(url);
       const json = await response.json();
 
       if (json.success) {
@@ -116,19 +121,27 @@ const UserGrid = () => {
           Global <span className="text-brand">Directory</span>
         </h1>
         <p className="text-text-secondary text-lg md:text-xl max-w-2xl relative z-10">
-          Connect with people from every corner of the world. A diverse community of creators, thinkers, and explorers.
+          {searchQuery ? `Searching for members matching "${searchQuery}"` : "Connect with people from every corner of the world. A diverse community."}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {users.map((user) => (
-          <UserCard 
-            key={`${user.login.uuid}-${Math.random()}`} 
-            user={user} 
-            onClick={setSelectedUser}
-          />
-        ))}
-      </div>
+      {users.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {users.map((user) => (
+            <UserCard 
+              key={`${user.login.uuid}-${Math.random()}`} 
+              user={user} 
+              onClick={setSelectedUser}
+            />
+          ))}
+        </div>
+      ) : !loading && (
+        <div className="text-center py-20 bg-surface border border-border rounded-[3rem]">
+          <Users size={60} className="mx-auto text-brand/20 mb-6" />
+          <h2 className="text-2xl font-black text-text-primary mb-2">No members found</h2>
+          <p className="text-text-secondary">Try searching for a different name or location!</p>
+        </div>
+      )}
 
       {hasMore && (
         <div className="flex justify-center mt-20 mb-12">
